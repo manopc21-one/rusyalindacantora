@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrato Épico de Fantasia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Cinzel', serif;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(ellipse at center, #1a0f2e 0%, #000000 100%);
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            filter: brightness(1.2) contrast(1.3) saturate(1.4);
+        }
+
+        .main-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            position: relative;
+            z-index: 2;
+            animation: epicReveal 3s ease-out;
+        }
+
+        /* Raios de luz dramáticos */
+        .light-ray {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                rgba(255, 223, 186, 0.3) 30%, 
+                rgba(135, 206, 250, 0.5) 50%, 
+                rgba(255, 223, 186, 0.3) 70%, 
+                transparent 100%);
+            transform-origin: top center;
+            animation: rayRotate 20s linear infinite;
+            filter: blur(1px);
+        }
+
+        .light-ray:nth-child(1) { left: 20%; animation-delay: 0s; }
+        .light-ray:nth-child(2) { left: 40%; animation-delay: -5s; }
+        .light-ray:nth-child(3) { left: 60%; animation-delay: -10s; }
+        .light-ray:nth-child(4) { left: 80%; animation-delay: -15s; }
+
+        /* Partículas mágicas flutuantes */
+        .magic-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #fff, transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 8s infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                        0 0 20px rgba(135, 206, 250, 0.6),
+                        0 0 30px rgba(100, 149, 237, 0.4);
+        }
+
+        /* Aura de poder */
+        .power-aura {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(ellipse at center, 
+                rgba(135, 206, 250, 0.3) 0%, 
+                rgba(65, 105, 225, 0.2) 30%, 
+                transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+            filter: blur(40px);
+            z-index: 1;
+        }
+
+        /* Círculo mágico */
+        .magic-circle {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 2px solid rgba(135, 206, 250, 0.3);
+            border-radius: 50%;
+            animation: rotate 30s linear infinite, glow 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .magic-circle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50%;
+        }
+
+        /* Estrelas cintilantes */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Efeito de energia ao redor */
+        .energy-wave {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(135, 206, 250, 0.4);
+            border-radius: 50%;
+            animation: expand 6s ease-out infinite;
+            z-index: 1;
+        }
+
+        /* Brilho epicêntrico */
+        .epicenter-glow {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(135, 206, 250, 0.2) 30%, 
+                transparent 70%);
+            filter: blur(60px);
+            animation: breathe 5s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        /* Lightning effect */
+        .lightning {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.9);
+            animation: flash 10s infinite;
+            z-index: 3;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+
+        /* Título épico */
+        .epic-title {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            text-shadow: 
+                0 0 10px rgba(135, 206, 250, 0.8),
+                0 0 20px rgba(65, 105, 225, 0.6),
+                0 0 30px rgba(25, 25, 112, 0.4),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+            animation: titleGlow 3s ease-in-out infinite;
+            z-index: 4;
+            font-weight: bold;
+        }
+
+        /* Animações */
+        @keyframes epicReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+                filter: brightness(2) blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: brightness(1) blur(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(135, 206, 250, 0.5),
+                            inset 0 0 20px rgba(135, 206, 250, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(135, 206, 250, 0.8),
+                            inset 0 0 40px rgba(135, 206, 250, 0.5);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            50% {
+                transform: translate(var(--tx), var(--ty)) scale(1.5);
+            }
+        }
+
+        @keyframes rayRotate {
+            0% { transform: rotate(0deg) translateY(-50%); opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { transform: rotate(360deg) translateY(-50%); opacity: 0.3; }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        @keyframes expand {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+        }
+
+        @keyframes flash {
+            0%, 95%, 100% { opacity: 0; }
+            96%, 98% { opacity: 0.6; }
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px rgba(135, 206, 250, 0.8),
+                    0 0 20px rgba(65, 105, 225, 0.6),
+                    0 0 30px rgba(25, 25, 112, 0.4),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 20px rgba(135, 206, 250, 1),
+                    0 0 40px rgba(65, 105, 225, 0.8),
+                    0 0 60px rgba(25, 25, 112, 0.6),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="light-ray"></div>
+        <div class="light-ray"></div>
+        <div class="light-ray"></div>
+        <div class="light-ray"></div>
+        
+        <div class="image-wrapper">
+            <div class="epicenter-glow"></div>
+            <div class="power-aura"></div>
+            <div class="magic-circle"></div>
+            <div class="energy-wave"></div>
+            <div class="energy-wave" style="animation-delay: 2s;"></div>
+            <div class="energy-wave" style="animation-delay: 4s;"></div>
+            
+            <img src="https://placeholder.com/800x1200" alt="Epic Fantasy Portrait" class="main-image" id="mainImage">
+            
+            <div class="lightning"></div>
+        </div>
+        
+        <div class="epic-title">Celestial Majesty</div>
+    </div>
+
+    <script>
+        // Criar partículas mágicas
+        const container = document.querySelector('.container');
+        for (let i = 0; i < 100; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'magic-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+            particle.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            container.appendChild(particle);
+        }
+
+        // Criar estrelas
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            container.appendChild(star);
+        }
+
+        // Upload de imagem
+        const mainImage = document.getElementById('mainImage');
+        
+        // Simulação de carregamento da imagem
+        mainImage.addEventListener('error', function() {
+            this.src = 'data:image/svg+xml,' + encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200" viewBox="0 0 800 1200">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1a0f2e;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0a0514;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect width="800" height="1200" fill="url(#grad1)"/>
+                    <text x="400" y="580" font-family="Arial" font-size="24" fill="#87CEEB" text-anchor="middle">
+                        Arraste sua imagem aqui
+                    </text>
+                    <text x="400" y="620" font-family="Arial" font-size="18" fill="#87CEEB" text-anchor="middle" opacity="0.7">
+                        ou clique para selecionar
+                    </text>
+                </svg>
+            `);
+        });
+
+        // Permitir arrastar e soltar imagem
+        const imageWrapper = document.querySelector('.image-wrapper');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            imageWrapper.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        imageWrapper.addEventListener('drop', handleDrop, false);
+        imageWrapper.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => handleFiles(e.target.files);
+            input.click();
+        });
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        mainImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        // Efeito de mouse para partículas extras
+        container.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) {
+                const particle = document.createElement('div');
+                particle.className = 'magic-particle';
+                particle.style.left = e.clientX + 'px';
+                particle.style.top = e.clientY + 'px';
+                particle.style.setProperty('--tx', (Math.random() - 0.5) * 100 + 'px');
+                particle.style.setProperty('--ty', -100 + 'px');
+                particle.style.animationDuration = '2s';
+                container.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 2000);
+            }
+        });
+    </script>
+</body>
+</html>
